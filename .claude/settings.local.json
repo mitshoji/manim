@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(manim -ql src/scenes/001_pythagorean_proof.py PythagoreanProof)"
+    ]
+  }
+}
