@@ -1,5 +1,6 @@
 from manim import *
 import numpy as np
+from src.utils.reel_scene import ReelScene # ReelFrame
 
 # ── カラーパレット（3Blue1Brown 風ダークテーマ） ──────────────
 BG_COLOR = "#0f0f1e"
@@ -8,7 +9,7 @@ COLOR_B  = "#83c167"   # 緑      （辺 b）
 COLOR_C  = "#e07a5f"   # 赤橙    （斜辺 c）
 
 
-class PythagoreanProof(Scene):
+class PythagoreanProof(ReelScene):
     def construct(self):
         self.camera.background_color = BG_COLOR
 
@@ -27,8 +28,8 @@ class PythagoreanProof(Scene):
         # ═══════════════════════════════════════════════════════
 
         # 辺の比 a:b = 105:72（÷40 でスクリーン座標に変換）
-        a_len = 105 / 40   # 2.625
-        b_len =  72 / 40   # 1.800
+        a_len = 105 / 50   # 2.625
+        b_len =  72 / 50   # 1.800
 
         # 頂点を原点基準で定義
         #   A = 直角頂点（左下）
@@ -40,7 +41,7 @@ class PythagoreanProof(Scene):
 
         # 三角形の重心を「画面中央やや下（DOWN*0.5）」に合わせる
         centroid0 = (A0 + B0 + C0) / 3
-        offset = np.array([0.0, -0.5, 0.0]) - centroid0
+        offset = np.array([0.0, +3.0, 0.0]) - centroid0
         A, B, C = A0 + offset, B0 + offset, C0 + offset
 
         # ── 三角形本体 ────────────────────────────────────────
@@ -313,7 +314,7 @@ class PythagoreanProof(Scene):
         # 数式エリア（画面下部）の Y 座標
         # ※ 外側正方形の下端 y = -s/2 ≈ -2.21 のさらに下
         # ※ フェーズ6の行2（EQ_Y2）が見切れないよう -2.9 に設定
-        EQ_Y = -2.9
+        EQ_Y = -5.0
 
         # ── 外側正方形の中央に (a+b)² をフェードイン ────────────
         eq_ab2 = MathTex("(a+b)^2", font_size=48, color=YELLOW)
@@ -596,22 +597,26 @@ class PythagoreanProof(Scene):
 
         # 左上→右上→右下→左下の順に1枚ずつフェードアウト
         # ½ab ラベルも各三角形と同時に消える
+        #　三角形が1枚消えるたびに外枠を細くする
+        outer_widths = [3.0, 2.0, 1.0, 0.4]
+
         for i in range(4):  # TL(0) → TR(1) → BR(2) → BL(3)
             self.play(
                 FadeOut(tris[i]),
                 FadeOut(label_half_ab[i]),
+                outer_sq.animate.set_stroke(width=outer_widths[i]),
                 run_time=0.5,
                 rate_func=smooth,
             )
             self.wait(0.1)
 
-        # 外側正方形の黄色ハイライトを細い白枠に変更
+        # 色を白へ・幅を最終値に整える
         self.play(
-            outer_sq.animate.set_stroke(color=WHITE, width=1.5),
+            outer_sq.animate.set_stroke(color=WHITE, width=0.5),
             run_time=0.8,
             rate_func=smooth,
         )
-
+       
         self.wait(1.5)
 
         # ── 後続フェーズで参照する変数 ──────────────────────────
