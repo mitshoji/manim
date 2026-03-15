@@ -29,16 +29,24 @@ project/
 
 ## コーディング規約
 - **ファイル名**: `001_topic_name.py`（specs と番号を合わせる）
-- **クラス名**: PascalCase、`Scene` を継承（例: `LimitsScene`）
+- **クラス名**: PascalCase、`ReelScene` を継承（例: `LimitsScene`）
 - **関数名**: snake_case
 - **インデント**: スペース4つ
 - **文字コード**: UTF-8
 
+## 出力フォーマット
+- **対象**: Instagram リール（縦型 9:16、1080×1920px）
+- **基底クラス**: すべてのシーンは `Scene` ではなく **`ReelScene`** を継承すること
+- **`ReelScene` の定義**: `src/utils/reel_scene.py`（フレームサイズ・解像度を一括管理）
+- 横型動画を作る場合のみ例外的に `Scene` を継承する
+
 ## シーンファイルのひな形
 ```python
 from manim import *
+import numpy as np
+from src.utils.reel_scene import ReelScene
 
-class TopicScene(Scene):
+class TopicScene(ReelScene):
     def construct(self):
         # ここにアニメーションを記述
         pass
@@ -63,6 +71,10 @@ manim -ql --preview src/scenes/<file>.py <SceneName>
 - `specs/` フォルダ内の `.md` ファイルが各動画の仕様書
 - ファイル名の番号が `src/scenes/` の対応ファイルと一致する
 - 実装前に仕様書を必ず読み、シーン構成・出力ファイル名・クラス名を確認すること
+
+## 作業ディレクトリ
+- **常に `C:/manim` で作業すること**（GitHub と連携しているメインリポジトリ）
+- git worktree は使用しない。`C:/manim/.claude/worktrees/` 以下にファイルを作らないこと
 
 ## よくある問題と対処
 - **LaTeX エラー**: 数式には `MathTex` を使い、通常テキストには `Text` を使う
